@@ -17,6 +17,7 @@ class CreateAppUsersTable extends Migration
             $table->increments('id');
             $table->string('firstname');
             $table->string('lastname');
+            $table->string('email');
             $table->timestamps();
         });
     }
