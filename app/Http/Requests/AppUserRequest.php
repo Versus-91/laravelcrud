@@ -27,7 +27,7 @@ class AppUserRequest extends FormRequest
         return [
             'firstname'=>'required',
             'lastname'=>'required',
-            'email'=>'required'
+            'email'=>'required|email'
         ];
     }
     protected function failedValidation(Validator $validator) {
