@@ -61,7 +61,7 @@ class AppUserController extends Controller
     {
         $user =$this->users->findOrFail($id);
         $user->update($request->all());
-        return response()->json(['message' => 'user successfully updated.','data'=>$user],200);  
+        return response()->json($user,200);  
     }
 
     /**
