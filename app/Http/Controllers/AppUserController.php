@@ -11,7 +11,7 @@ class AppUserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return json
      */
     protected $users;
     public function __construct(AppUser $user){
@@ -21,10 +21,7 @@ class AppUserController extends Controller
     {
         //
         $users = $this->users->all();
-        if($users->isEmpty()){
-            return response()->json(['message'=>'nothing to show '],404);
-        }
-        return response()->json($users);
+        return response()->json($users,200);
     }
 
 
@@ -32,31 +29,23 @@ class AppUserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return json
      */
     public function store(AppUserRequest $request)
     {
-        try {
-            $user = $this->users->create($request->only('firstname','lastname','email'));
-            return response()->json($user);
-        } catch (QueryException $e) {
-            return response()->json('request failed.',500);
-        }
-
+        $user = $this->users->create($request->only('firstname','lastname','email'));
+        return response()->json($user,201);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return json
      */
     public function show($id)
     {
-        $user = $this->users->find($id);
-        if(!$user){
-            return response()->json(['message'=>'record not found.'],404);
-        }
+        $user = $this->users->findOrFail($id);
         return response()->json($user,200);
     }
 
@@ -66,18 +55,14 @@ class AppUserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return json
      */
     public function update(AppUserRequest $request, $id)
     {
-        $user =$this->users->find($id);
-        if($user){
-            $user->update($request->only('firstname','lastname','email'));
-            return response()->json(['message' => 'user successfully updated.','data'=>$user],200);  
-        }else {
-            # code...
-            return response()->json(['message' => 'user not found'],404);  
-        }
+        $user =$this->users->findOrFail($id);
+        $user->update($request->only('firstname','lastname','email'));
+        return response()->json(['message' => 'user successfully updated.','data'=>$user],200);  
+
 
     }
 
@@ -85,16 +70,13 @@ class AppUserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return json
      */
     public function destroy($id)
     {
-        $user = $this->users->find($id);
-        if($user){
-            $user->destroy();
-            return response()->json($user,200);  
-        }else {
-            return response()->json(['message'=>'user not found.'],400);  
-        }
+        $user = $this->users->findOrFail($id)->delete();
+
+        return response()->json(null,204);  
+
     }
 }
